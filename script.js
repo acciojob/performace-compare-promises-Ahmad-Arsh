@@ -13,3 +13,27 @@ const apiUrls = [
 ];
 
 // You can write your code here
+async function fetchData(apiUrls) {
+  const outputAll = document.getElementById('output-all');
+  const outputAny = document.getElementById('output-any');
+
+  // Using Promise.all
+  const startAll = performance.now();
+  try {
+    const responses = await Promise.all(apiUrls.map(url => fetch(url)));
+    const data = await Promise.all(responses.map(response => response.json()));
+    outputAll.innerHTML = `Promise.all completed in ${performance.now() - startAll}ms`;
+  } catch (error) {
+    outputAll.innerHTML = `Promise.all failed: ${error}`;
+  }
+
+  // Using Promise.any
+  const startAny = performance.now();
+  try {
+    const response = await Promise.any(apiUrls.map(url => fetch(url)));
+    const data = await response.json();
+    outputAny.innerHTML = `Promise.any completed in ${performance.now() - startAny}ms`;
+  } catch (error) {
+    outputAny.innerHTML = `Promise.any failed: ${error}`;
+  }
+}
